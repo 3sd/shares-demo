@@ -1,0 +1,57 @@
+{assign var='asset' value='asset_id:label'}
+{assign var='header' value='Certificate_text.Certificate_header_text'}
+{assign var='footer' value='Certificate_text.Certificate_footer_text'}
+{assign var='logo' value='CoShares_society_info.Logo'}
+{assign var='css' value='CoShares_society_info.CSS'}
+{literal}
+<style>
+  .shares-certificate { font-family: "Times New Roman", Times, serif; color: #2a2a2a; border: 3pt double #1d4e45; padding: 4mm; }
+  .shares-certificate .inner { border: 0.75pt solid #b0894a; padding: 7mm 18mm 7mm; text-align: center; }
+  .shares-certificate p { margin: 0; }
+  .shares-certificate .logo img { height: 15mm; margin-bottom: 2mm; }
+  .shares-certificate .society { font-size: 21pt; letter-spacing: 2.5pt; text-transform: uppercase; color: #1d4e45; }
+  .shares-certificate .registration { font-family: Helvetica, Arial, sans-serif; font-size: 7.5pt; color: #6d6d6d; margin-top: 2mm; }
+  .shares-certificate .title { font-size: 30pt; font-style: italic; color: #b0894a; margin: 6mm 0 5mm; }
+  .shares-certificate .lead { font-size: 12pt; color: #555555; }
+  .shares-certificate .holder { font-size: 24pt; margin: 3mm 0 5mm; }
+  .shares-certificate .amount { font-size: 28pt; font-weight: bold; color: #1d4e45; margin: 3mm 0 2mm; }
+  .shares-certificate .issue { font-size: 14pt; margin-bottom: 3mm; }
+  .shares-certificate .on-behalf { font-size: 11pt; font-style: italic; color: #555555; margin-top: 2mm; }
+  .shares-certificate .signatures { width: 100%; border-collapse: collapse; margin-top: 11mm; }
+  .shares-certificate .signatures td { width: 33%; vertical-align: bottom; font-family: Helvetica, Arial, sans-serif; font-size: 8pt; color: #555555; text-align: center; }
+  .shares-certificate .signatures .signature { height: 15mm; }
+  .shares-certificate .signatures .line { border-top: 0.75pt solid #555555; margin: 0 10mm; padding-top: 2pt; }
+  .shares-certificate .date { font-size: 11pt; color: #2a2a2a; padding-bottom: 2pt; }
+  .shares-certificate .footer { font-family: Helvetica, Arial, sans-serif; font-size: 7pt; color: #7a7a7a; margin-top: 6mm; }
+</style>
+{/literal}
+{if !empty($society.$css)}<style>{$society.$css}</style>{/if}
+<div class="shares-certificate">
+  <div class="inner">
+    {if !empty($society.$logo)}<p class="logo"><img src="{$society.$logo}" alt="" /></p>{/if}
+    <p class="society">{$society.display_name}</p>
+    <div class="registration">{$society.$header|default:''}</div>
+
+    <p class="title">{$issue.$asset} Certificate</p>
+
+    <p class="lead">This is to certify that</p>
+    <p class="holder">{contact.display_name}</p>
+    <p class="lead">is the registered holder of</p>
+    <p class="amount">{$amount|crmMoney}</p>
+    <p class="issue">in the {$issue.name}</p>
+
+    {if !empty($onBehalfOf.id)}
+    <p class="on-behalf">These {$issue.$asset|lower}s were bought on behalf of {$onBehalfOf.display_name}</p>
+    {/if}
+
+    <table class="signatures">
+      <tr>
+        <td><div class="signature signature-secretary"></div><div class="line line-secretary">Secretary</div></td>
+        <td><div class="date">{$date|crmDate:'%e %B %Y'}</div><div class="line">Date of issue</div></td>
+        <td><div class="signature signature-chair"></div><div class="line line-chair">Chair of the Board</div></td>
+      </tr>
+    </table>
+
+    <div class="footer">{$society.$footer|default:''}</div>
+  </div>
+</div>

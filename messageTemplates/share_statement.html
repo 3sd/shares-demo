@@ -1,0 +1,100 @@
+{assign var='asset' value='asset_id:label'}
+{assign var='header' value='Statement_text.Statement_header_text'}
+{assign var='footer' value='Statement_text.Statement_footer_text'}
+{assign var='logo' value='CoShares_society_info.Logo'}
+{assign var='css' value='CoShares_society_info.CSS'}
+{literal}
+<style>
+  .shares-statement { font-family: Helvetica, Arial, sans-serif; font-size: 9.5pt; color: #24323a; line-height: 1.4; }
+  .shares-statement table { border-collapse: collapse; width: 100%; }
+  .shares-statement td, .shares-statement th { vertical-align: top; }
+  .shares-statement p { margin: 0 0 4pt; }
+  .shares-statement .logo { width: 19mm; }
+  .shares-statement .logo img { height: 15mm; }
+  .shares-statement .society-name { font-family: "Times New Roman", Times, serif; font-size: 19pt; color: #1d4e45; margin: 0 0 3pt; }
+  .shares-statement .society-header { font-size: 8.5pt; color: #5d6b72; }
+  .shares-statement .doc-title { text-align: right; }
+  .shares-statement .doc-title .doc-name { font-size: 15pt; font-weight: bold; letter-spacing: 2pt; text-transform: uppercase; color: #1d4e45; margin: 0 0 3pt; }
+  .shares-statement .rule { border-top: 2.5pt solid #1d4e45; margin: 8pt 0 16pt; }
+  .shares-statement .address { width: 58%; height: 30mm; font-size: 10.5pt; }
+  .shares-statement .summary { width: 42%; background: #f3f4f4; border-left: 3pt solid #1d4e45; padding: 7pt 10pt; }
+  .shares-statement .summary .label { font-size: 8pt; text-transform: uppercase; letter-spacing: 1pt; color: #5d6b72; }
+  .shares-statement .summary .total { font-size: 17pt; color: #1d4e45; font-weight: bold; }
+  .shares-statement h2 { font-size: 11.5pt; color: #1d4e45; margin: 18pt 0 6pt; }
+  .shares-statement h2 span { font-size: 9pt; color: #5d6b72; font-weight: normal; }
+  .shares-statement .periods th { background: #1d4e45; color: #ffffff; font-size: 8pt; text-align: right; padding: 4pt 6pt; }
+  .shares-statement .periods td { text-align: right; padding: 4pt 6pt; border-bottom: 0.75pt solid #dde1e3; }
+  .shares-statement .periods .period { text-align: left; width: 31%; white-space: nowrap; }
+  .shares-statement .none { color: #a3adb2; }
+  .shares-statement .footer { margin-top: 22pt; padding-top: 8pt; border-top: 0.75pt solid #d3d8db; font-size: 7.5pt; color: #5d6b72; }
+</style>
+{/literal}
+{if !empty($society.$css)}<style>{$society.$css}</style>{/if}
+<div class="shares-statement">
+  <table>
+    <tr>
+      <td>
+        <table>
+          <tr>
+            {if !empty($society.$logo)}<td class="logo"><img src="{$society.$logo}" alt="" /></td>{/if}
+            <td>
+              <p class="society-name">{$society.display_name}</p>
+              <div class="society-header">{$society.$header|default:''}</div>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td class="doc-title">
+        <div class="doc-name">Statement</div>
+        <p>{$date|crmDate:'%e %B %Y'}</p>
+      </td>
+    </tr>
+  </table>
+
+  <div class="rule"></div>
+
+  <table>
+    <tr>
+      <td class="address">
+        <strong>{contact.display_name}</strong><br />
+        {contact.address_primary.street_address}<br />
+        {contact.address_primary.city}<br />
+        {contact.address_primary.postal_code}
+      </td>
+      <td class="summary">
+        <div class="label">Interest and capital paid to you</div>
+        <div class="total">{$total|crmMoney}</div>
+        <div>for the periods shown below</div>
+      </td>
+    </tr>
+  </table>
+
+  {foreach from=$issues item=issue}
+  <h2>{$issue.name} <span>{$issue.$asset|lower}s of {$issue.value|crmMoney} each</span></h2>
+  <table class="periods">
+    <tr>
+      <th class="period">Accounting period</th>
+      <th>Interest rate</th>
+      <th>Holding at end of period</th>
+      <th>Interest paid</th>
+      <th>Interest waived</th>
+      <th>Capital repaid</th>
+    </tr>
+    {foreach from=$periods item=period}
+    {if $period.issue_id eq $issue.id}
+    {assign var='summary' value=$summaries[$period.id]}
+    <tr>
+      <td class="period">{$period.start_date|crmDate:'%e %b %Y'} - {$period.end_date|crmDate:'%e %b %Y'}</td>
+      <td>{$period.interest_rate|string_format:'%.2f'}%</td>
+      <td>{$summary.balance|crmMoney}</td>
+      <td>{if $summary.interest_amount gt 0}{$summary.interest_amount|crmMoney}{else}<span class="none">-</span>{/if}</td>
+      <td>{if $summary.waived_amount gt 0}{$summary.waived_amount|crmMoney}{else}<span class="none">-</span>{/if}</td>
+      <td>{if $summary.repayment_amount gt 0}{$summary.repayment_amount|crmMoney}{else}<span class="none">-</span>{/if}</td>
+    </tr>
+    {/if}
+    {/foreach}
+  </table>
+  {/foreach}
+
+  <div class="footer">{$society.$footer|default:''}</div>
+</div>
