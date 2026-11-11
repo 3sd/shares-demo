@@ -31,12 +31,9 @@ class SharesDemo extends Generic\AbstractEntity {
    * @return Generic\BasicGetFieldsAction
    */
   public static function getFields($checkPermissions = TRUE) {
-    return (new Generic\BasicGetFieldsAction(static::getEntityName(), __FUNCTION__, [self::class, 'getFieldSpecs']))
-      ->setCheckPermissions($checkPermissions);
-  }
-
-  public static function getFieldSpecs(): array {
-    return [];
+    return (new Generic\BasicGetFieldsAction(__CLASS__, __FUNCTION__, function() {
+      return [];
+    }))->setCheckPermissions($checkPermissions);
   }
 
   public static function permissions() {
