@@ -533,13 +533,24 @@ class SampleData {
           'address_primary.postal_code' => $society['postcode'],
           'address_primary.country_id' => $this->countryId,
           'Society_Options.Round_to_share' => $society['round_to_share'],
-          'CoShares_society_info.Logo' => E::url("images/logos/$key.svg"),
+          'CoShares_society_info.Logo' => $this->getLogoUrl($key),
           'CoShares_society_info.CSS' => $this->getSocietyCss($society),
         ], $this->getSocietyTexts($society)))
         ->execute()
         ->first();
       $this->addToGroup($this->societies[$key]['id']);
     }
+  }
+
+  private function getLogoUrl(string $key): string {
+    $file = "images/logos/$key.svg";
+    $path = E::path($file);
+    $config = \CRM_Core_Config::singleton();
+    $relativePath = \CRM_Utils_File::relativize($path, \CRM_Utils_File::addTrailingSlash($config->extensionsDir));
+    if ($relativePath === $path) {
+      return E::url($file);
+    }
+    return \CRM_Utils_File::addTrailingSlash($config->extensionsURL, '/') . $relativePath;
   }
 
   private function getSocietyTexts(array $society): array {
