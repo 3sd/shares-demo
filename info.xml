@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <extension key="shares-demo" type="module">
   <file>shares_demo</file>
-  <name>shares-demo</name>
+  <name>Shares Demo</name>
   <description>Generates sample data for CiviShares demo, test and development sites</description>
   <license>AGPL-3.0</license>
   <authors>
