@@ -1,12 +1,12 @@
 # CiviShares demo
 
-Generates a realistic set of CiviShares sample data for demo sites, manual testing and development. It builds about ten years of history for four UK societies by running the same code that the CiviShares screens use, so every holding, account balance, statement and payment is consistent.
+Generates a realistic set of sample data for [CiviShares](https://civicrm.org/extensions/civishares) ([source](https://lab.civicrm.org/extensions/shares)) for demo sites, manual testing and development. It builds about ten years of history for four UK societies by running the same code that the CiviShares screens use, so every holding, account balance, statement and payment is consistent.
 
 > **Warning:** only install this extension on demo, test or development sites. It creates contacts, contributions, bank accounts and share transactions that cannot be edited or deleted on the CiviShares screens (share accounts, transactions and entries are append only). `SharesDemo.reset` removes them again.
 
 ## Generating the data
 
-Enable the extension (it needs `shares` and `bank_account`). Run as an administrator:
+Enable the extension. It needs CiviShares (`shares`), which in turn needs `bank_account` and `notification`. Run as an administrator:
 
 ```bash
 cv api4 --user=admin SharesDemo.generate
